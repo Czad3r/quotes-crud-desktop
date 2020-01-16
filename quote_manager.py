@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from db import Database
+import re
 
 db = Database('store.db')
 
@@ -49,7 +50,7 @@ class Application(tk.Frame):
     
     def create_Date(self):
         self.date_text = tk.StringVar()
-        self.date_label = tk.Label(self.master, text='Date', font=('bold', 14))
+        self.date_label = tk.Label(self.master, text='Date(yyyy-mm-dd)', font=('bold', 14))
         self.date_label.grid(row=1, column=2, sticky=tk.W)
         self.date_entry = tk.Entry(self.master, textvariable=self.date_text,width=self.textFieldWidth)
         self.date_entry.grid(row=1, column=3)
@@ -93,14 +94,31 @@ class Application(tk.Frame):
         for row in db.fetch():
             self.quotes_list.insert("", "end", row[0], text=row[0], values=(row[1],row[2],row[3],row[4]))
 
-    def add_item(self):
-        if self.quote_text.get() == '' or self.author_text.get() == '' or self.source_text.get() == '' or self.date_text.get() == '':
+    @staticmethod
+    def __chceck_date(date):
+        flag = re.findall("^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$", date)
+        return False if flag else True
+
+    def __chceck_inputs(self):
+
+        if self.quote_text.get() == '' or self.author_text.get() == '' or self.source_text.get() == '':
             messagebox.showerror(
                 "Required Fields", "Please include all fields")
-            return
-        db.insert(self.quote_text.get(), self.author_text.get(),self.source_text.get(), self.date_text.get())
-        self.clear_text()
-        self.populate_list()
+            return False
+
+        if Application.__chceck_date(self.date_text.get()):
+            messagebox.showerror(
+                "Required Fields", "Invalid date format (yyyy-mm-dd)")
+            return False
+
+        return True
+
+    def add_item(self):
+
+        if self.__chceck_inputs():
+            db.insert(self.quote_text.get(), self.author_text.get(),self.source_text.get(), self.date_text.get())
+            self.clear_text()
+            self.populate_list()
 
     def select_item(self, event):
         try:
@@ -124,8 +142,10 @@ class Application(tk.Frame):
         self.populate_list()
 
     def update_item(self):
-        db.update(self.selected_item[0], self.quote_text.get(), self.author_text.get(), self.source_text.get(), self.date_text.get())
-        self.populate_list()
+
+        if self.__chceck_inputs():
+            db.update(self.selected_item[0], self.quote_text.get(), self.author_text.get(), self.source_text.get(), self.date_text.get())
+            self.populate_list()
 
     def clear_text(self):
         self.quote_entry.delete(0, tk.END)
