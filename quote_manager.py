@@ -96,6 +96,7 @@ class Application(tk.Frame):
 
     @staticmethod
     def __chceck_date(date):
+        
         flag = re.findall("^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$", date)
         return False if flag else True
 
