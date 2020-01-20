@@ -29,7 +29,7 @@ class Application(tk.Frame):
 
     def create_Quote(self):
         self.quote_text = tk.StringVar()
-        self.quote_label = tk.Label(self.master, text='Quote Name', font=('bold', 14), padx=20, pady=20)
+        self.quote_label = tk.Label(self.master, text='Quote', font=('bold', 14), padx=20, pady=20)
         self.quote_label.grid(row=0, column=0, sticky=tk.W)
         self.quote_entry = tk.Entry(self.master, textvariable=self.quote_text,width=self.textFieldWidth)
         self.quote_entry.grid(row=0, column=1)
