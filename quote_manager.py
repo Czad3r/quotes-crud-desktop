@@ -95,28 +95,30 @@ class Application(tk.Frame):
             self.quotes_list.insert("", "end", row[0], text=row[0], values=(row[1],row[2],row[3],row[4]))
 
     @staticmethod
-    def __chceck_date(date):
+    def isDateIncorrect(date):
+        if date=='':
+            return False
         flag = re.findall("^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$", date)
         return False if flag else True
 
     @staticmethod
-    def __chceck_author(author):
+    def isAuthorIncorrect(author):
         flag = re.findall("^[^1-9-+/*@%^{}['\]]+?$$",author)
         return False if flag else True
 
-    def __chceck_inputs(self):
+    def __check_inputs(self):
 
         if self.quote_text.get() == '' or self.source_text.get() == '':
             messagebox.showerror(
                 "Required Fields", "Please include all fields")
             return False
 
-        if Application.__chceck_date(self.date_text.get()):
+        if Application.isDateIncorrect(self.date_text.get()):
             messagebox.showerror(
                 "Required Fields", "Invalid date format (yyyy-mm-dd)")
             return False
 
-        if Application.__chceck_author(self.author_text.get()):
+        if Application.isAuthorIncorrect(self.author_text.get()):
             messagebox.showerror(
                 "Required Fields", "Please enter correct author's name")
             return False
@@ -125,7 +127,7 @@ class Application(tk.Frame):
 
     def add_item(self):
 
-        if self.__chceck_inputs():
+        if self.__check_inputs():
             db.insert(self.quote_text.get(), self.author_text.get(),self.source_text.get(), self.date_text.get())
             self.clear_text()
             self.populate_list()
@@ -153,7 +155,7 @@ class Application(tk.Frame):
 
     def update_item(self):
 
-        if self.__chceck_inputs():
+        if self.__check_inputs():
             db.update(self.selected_item[0], self.quote_text.get(), self.author_text.get(), self.source_text.get(), self.date_text.get())
             self.populate_list()
 
