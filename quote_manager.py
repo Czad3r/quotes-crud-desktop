@@ -101,7 +101,7 @@ class Application(tk.Frame):
 
     @staticmethod
     def __chceck_author(author):
-        flag = re.findall("^[^1-9]+?$",author)
+        flag = re.findall("^[^1-9-+/*@%^{}['\]]+?$$",author)
         return False if flag else True
 
     def __chceck_inputs(self):
