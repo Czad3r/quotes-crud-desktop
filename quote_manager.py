@@ -96,13 +96,17 @@ class Application(tk.Frame):
 
     @staticmethod
     def __chceck_date(date):
-        
         flag = re.findall("^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$", date)
+        return False if flag else True
+
+    @staticmethod
+    def __chceck_author(author):
+        flag = re.findall("^[^1-9]+?$",author)
         return False if flag else True
 
     def __chceck_inputs(self):
 
-        if self.quote_text.get() == '' or self.author_text.get() == '' or self.source_text.get() == '':
+        if self.quote_text.get() == '' or self.source_text.get() == '':
             messagebox.showerror(
                 "Required Fields", "Please include all fields")
             return False
@@ -110,6 +114,11 @@ class Application(tk.Frame):
         if Application.__chceck_date(self.date_text.get()):
             messagebox.showerror(
                 "Required Fields", "Invalid date format (yyyy-mm-dd)")
+            return False
+
+        if Application.__chceck_author(self.author_text.get()):
+            messagebox.showerror(
+                "Required Fields", "Please enter correct author's name")
             return False
 
         return True
